@@ -16,8 +16,10 @@ import {
   UpdateDateColumn,
   Unique,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { RoleEntity } from 'src/roles/infrastructure/entities/role.entity';
+import { QueryEntity } from 'src/queries/infrstructure/entities/query.entity';
 
 
 @Entity({
@@ -68,6 +70,9 @@ export class UserEntity extends EntityRelationalHelper {
     eager: true,
   })
   status?: StatusEntity;
+
+  @OneToMany(() => QueryEntity, (query) => query.user)
+  query: QueryEntity[];
 
 
   @CreateDateColumn()

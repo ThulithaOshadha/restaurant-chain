@@ -70,6 +70,7 @@ export class AuthService {
     const session = await this.sessionService.create({
       user,
     });
+    
 
     const { token, refreshToken, tokenExpires } = await this.getTokensData({
       id: user.id,

@@ -26,7 +26,6 @@ import { User } from 'src/users/domain/user';
 @ApiTags('Auth')
 @Controller({
   path: 'auth',
-  version: '1',
 })
 export class AuthController {
   constructor(private readonly service: AuthService) {}
