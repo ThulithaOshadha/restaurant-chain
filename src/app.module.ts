@@ -22,6 +22,7 @@ import { RedisModule } from './redis/redis.module';
 import { PermissionModule } from './permission/permission.module';
 import { RolePermissionModule } from './role-permission/role-permission.module';
 import { QueriesModule } from './queries/queries.module';
+import { GalleryModule } from './gallery/gallery.module';
 
 
 @Module({
@@ -76,6 +77,7 @@ import { QueriesModule } from './queries/queries.module';
     PermissionModule,
     RolePermissionModule,
     QueriesModule,
+    GalleryModule,
 
   ],
 })
