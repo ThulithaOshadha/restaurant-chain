@@ -24,6 +24,7 @@ import { RolePermissionModule } from './role-permission/role-permission.module';
 import { QueriesModule } from './queries/queries.module';
 import { GalleryModule } from './gallery/gallery.module';
 import { ProductsModule } from './products/products.module';
+import { OffersModule } from './offers/offers.module';
 
 
 @Module({
@@ -80,6 +81,7 @@ import { ProductsModule } from './products/products.module';
     QueriesModule,
     GalleryModule,
     ProductsModule,
+    OffersModule,
 
   ],
 })
