@@ -7,5 +7,5 @@ export class QueryDomain {
   response?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
-  deletedAt?: Date;
+  deletedAt?: Date;  
 }
