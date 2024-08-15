@@ -6,10 +6,11 @@ import {
   AfterInsert,
   OneToMany,
 } from 'typeorm';
-import { EntityRelationalHelper } from 'src/utils/relational-entity-helper';
+import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 import appConfig from '../../../../../config/app.config';
 import { AppConfig } from 'src/config/app-config.type';
 import { GalleryFilesEntity } from 'src/gallery/infrastructure/entities/gallery-files.entity';
+import { ProductFilesEntity } from '../../../../../products/infrastructure/entities/product-files.entity';
 
 @Entity({ name: 'file' })
 export class FileEntity extends EntityRelationalHelper {
@@ -21,6 +22,9 @@ export class FileEntity extends EntityRelationalHelper {
 
   @OneToMany(() => GalleryFilesEntity, (gallery) => gallery.file)
   gallery: GalleryFilesEntity;
+
+  @OneToMany(() => ProductFilesEntity, (ppf) => ppf.file)
+  products: ProductFilesEntity[];
 
   @AfterLoad()
   @AfterInsert()

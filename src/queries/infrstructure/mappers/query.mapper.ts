@@ -6,6 +6,8 @@ import { UserEntity } from '../../../users/infrastructure/entities/user.entity';
 export class QueryMapper {
     static toDomain(raw: QueryEntity): QueryDomain {
         const query = new QueryDomain();
+        console.log('raw ========== ',raw);
+        
         query.id = raw.id;
         query.queryText = raw.queryText;
         query.response = raw.response;

@@ -59,8 +59,8 @@ export class QueryRepository implements AbstractQueryRepository {
     async findOne(fields: EntityCondition<QueryDomain>): Promise<NullableType<QueryDomain>> {
         const entity = await this.repository.findOne({
             where: fields as FindOptionsWhere<QueryEntity>,
+            relations: { user: true }
         });
-
         return entity ? QueryMapper.toDomain(entity) : null;
     }
     async update(
@@ -74,8 +74,9 @@ export class QueryRepository implements AbstractQueryRepository {
                 HttpStatus.NOT_FOUND,
             );
         }
+        isExistCity.response = updateData.response;
 
-        //const updateEntity = await this.repository.save(updateData);
+        const updateEntity = await this.repository.save(QueryMapper.toPersistence(isExistCity));
         return isExistCity;
     }
 

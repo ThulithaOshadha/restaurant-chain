@@ -48,7 +48,9 @@ export class QueriesService {
     }
 
     async update(id: string, updateCityDto: UpdateQueryDto): Promise<QueryDomain> {
+        
         const isExistCity = await this.findOne({ id });
+        
         if (!isExistCity) {
             throw new CustomException('query does not exist', HttpStatus.NOT_FOUND);
         }

@@ -23,6 +23,7 @@ import { PermissionModule } from './permission/permission.module';
 import { RolePermissionModule } from './role-permission/role-permission.module';
 import { QueriesModule } from './queries/queries.module';
 import { GalleryModule } from './gallery/gallery.module';
+import { ProductsModule } from './products/products.module';
 
 
 @Module({
@@ -78,6 +79,7 @@ import { GalleryModule } from './gallery/gallery.module';
     RolePermissionModule,
     QueriesModule,
     GalleryModule,
+    ProductsModule,
 
   ],
 })

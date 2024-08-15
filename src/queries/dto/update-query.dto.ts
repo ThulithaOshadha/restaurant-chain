@@ -1,11 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class UpdateQueryDto {
     @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
-    queryText: string;
+    @IsOptional()
+    queryText?: string;
 
     @ApiProperty()
     @IsNotEmpty()
