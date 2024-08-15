@@ -20,8 +20,8 @@ export class ProductsController {
   create(@Body() createProductDto: CreateProductDto): Promise<Product> {
     return this.productsService.create(createProductDto);
   }
-
-  @Get('get-all-products') 
+ 
+  @Get() 
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Query('pages', { transform: (value) => (value ? Number(value) : 1) })
