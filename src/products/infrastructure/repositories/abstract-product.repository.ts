@@ -17,7 +17,7 @@ export abstract class ProductRepository {
         filterOptions?: FilterProductDto | null;
         paginationOptions: IPaginationOptions;
     }): Promise<InfinityPaginationResultType<Product>>;
-
+ 
     abstract findOne(
         fields: EntityCondition<Product>,
     ): Promise<NullableType<Product>>;

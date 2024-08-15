@@ -1,9 +1,6 @@
 import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ProductsEntity } from "../entities/products.entity";
 import { DataSource, FindOptionsWhere, ILike, QueryRunner, Repository } from "typeorm";
-import { ProductFilesEntity } from "../entities/product-files.entity";
-import { ProductRepository } from "./abstract-product.repository";
 import { FilesService } from "src/files/files.service";
 import { Product } from "src/products/domain/product";
 import { FilterProductDto } from "src/products/dto/filter-product.dto";
@@ -11,38 +8,42 @@ import { EntityCondition } from "src/utils/types/entity-condition.type";
 import { InfinityPaginationResultType } from "src/utils/types/infinity-pagination-result.type";
 import { NullableType } from "src/utils/types/nullable.type";
 import { IPaginationOptions } from "src/utils/types/pagination-options";
-import { ProductMapper } from "../mappers/product-mapper";
 import { CustomException } from "src/exception/common-exception";
 import { FileEntity } from "src/files/infrastructure/persistence/relational/entities/file.entity";
+import { OffersAbstractRepository } from "./abstract-offer.repository";
+import { Offer } from "src/offers/domain/offer";
+import { OffersEntity } from "../entities/offer.entity";
+import { OfferFilesEntity } from "../entities/offer-files.entity";
+import { OfferMapper } from "../mappers/offer.mapper";
 
 @Injectable()
-export class ProductRelationalRepository implements ProductRepository {
+export class OffersRepository implements OffersAbstractRepository {
     constructor(
-        @InjectRepository(ProductsEntity) 
-        private readonly productRepository: Repository<ProductsEntity>,
-        @InjectRepository(ProductFilesEntity)
-        private readonly productFileRepository: Repository<ProductFilesEntity>,
+        @InjectRepository(OffersEntity)
+        private readonly offerRepository: Repository<OffersEntity>,
+        @InjectRepository(OfferFilesEntity)
+        private readonly offerFileRepository: Repository<OfferFilesEntity>,
         private dataSource: DataSource,
         private readonly fileService: FilesService,
     ) { }
 
-    async create(data: Product): Promise<Product> {
+    async create(data: Offer): Promise<Offer> {
         const queryRunner = this.dataSource.createQueryRunner();
 
         await queryRunner.connect();
         try {
             await queryRunner.startTransaction();
 
-            const persistenceModel = ProductMapper.toPersistence(data);
+            const persistenceModel = OfferMapper.toPersistence(data);
 
             const newEntity = await queryRunner.manager.save(
-                ProductsEntity,
+                OffersEntity,
                 persistenceModel,
             );
             const fileArray: any = [];
             if (data.files?.length) {
                 for (let file of data.files) {
-                    const fileEntity = await this.createProductFile(
+                    const fileEntity = await this.createOfferFile(
                         newEntity.id,
                         file.id!,
                         file.altTag!,
@@ -54,7 +55,7 @@ export class ProductRelationalRepository implements ProductRepository {
             }
             await queryRunner.commitTransaction();
             newEntity.files = fileArray;
-            return ProductMapper.toDomain(newEntity);
+            return OfferMapper.toDomain(newEntity);
         } catch (error) {
             console.log(error);
             await queryRunner.rollbackTransaction();
@@ -65,23 +66,23 @@ export class ProductRelationalRepository implements ProductRepository {
         }
     }
 
-    async createProductFile(
-        productId: string,
+    async createOfferFile(
+        offerId: string,
         fileId: string,
         altTag: string,
         isDefault: boolean,
         queryRunner: QueryRunner,
-    ): Promise<ProductFilesEntity> {
-        const productFile = this.productFileRepository.create({
+    ): Promise<OfferFilesEntity> {
+        const offerFile = this.offerFileRepository.create({
             file: { id: fileId } as FileEntity,
-            product: { id: productId } as ProductsEntity,
+            offer: { id: offerId } as OffersEntity,
             altTag: altTag,
             isDefault: isDefault,
         });
 
         const productFileEntity = await queryRunner.manager.save(
-            ProductFilesEntity,
-            productFile,
+            OfferFilesEntity,
+            offerFile,
         );
         return productFileEntity;
     }
@@ -92,8 +93,8 @@ export class ProductRelationalRepository implements ProductRepository {
     }: {
         filterOptions?: FilterProductDto | null | undefined;
         paginationOptions: IPaginationOptions;
-    }): Promise<InfinityPaginationResultType<Product>> {
-        const where: FindOptionsWhere<ProductsEntity> = {};
+    }): Promise<InfinityPaginationResultType<Offer>> {
+        const where: FindOptionsWhere<OffersEntity> = {};
         if (filterOptions?.name?.length) {
             where.name = ILike(`%${filterOptions.name}%`);
         }
@@ -102,10 +103,10 @@ export class ProductRelationalRepository implements ProductRepository {
             where.status = filterOptions.status;
         }
 
-        const totalRecords = await this.productRepository.count({ where });
+        const totalRecords = await this.offerRepository.count({ where });
 
         paginationOptions.totalRecords = totalRecords;
-        const entities = await this.productRepository.find({
+        const entities = await this.offerRepository.find({
             skip: (paginationOptions.page - 1) * paginationOptions.limit,
             take: paginationOptions.limit,
             where: where,
@@ -118,7 +119,7 @@ export class ProductRelationalRepository implements ProductRepository {
                 updatedAt: 'DESC',
             },
         });
-        const records = entities.map((product) => ProductMapper.toDomain(product));
+        const records = entities.map((offer) => OfferMapper.toDomain(offer));
 
         return {
             data: records,
@@ -127,22 +128,22 @@ export class ProductRelationalRepository implements ProductRepository {
             hasNextPage: records.length === paginationOptions.limit,
         };
     }
-    async findOne(fields: EntityCondition<Product>): Promise<NullableType<Product>> {
-        const entity = await this.productRepository.findOne({
-            where: fields as FindOptionsWhere<ProductsEntity>,
+    async findOne(fields: EntityCondition<Offer>): Promise<NullableType<Offer>> {
+        const entity = await this.offerRepository.findOne({
+            where: fields as FindOptionsWhere<OffersEntity>,
             relations: {
                 files: { file: true },
             },
         });
 
-        return entity ? ProductMapper.toDomain(entity) : null;
+        return entity ? OfferMapper.toDomain(entity) : null;
     }
-    async updateProductData(productId: string, updateData: Product): Promise<Product> {
-        const product = await this.productRepository.findOne({
+    async updateOfferData(productId: string, updateData: Product): Promise<Product> {
+        const product = await this.offerRepository.findOne({
             where: { id: productId },
         });
         if (!product) {
-            throw new CustomException('Product not found', HttpStatus.NOT_FOUND);
+            throw new CustomException('Offer not found', HttpStatus.NOT_FOUND);
         }
 
         const queryRunner = this.dataSource.createQueryRunner();
@@ -162,7 +163,7 @@ export class ProductRelationalRepository implements ProductRepository {
                         continue;
                     }
                     if (!isAlreadyAssigned) {
-                        await this.createProductFile(
+                        await this.createOfferFile(
                             productId,
                             file.id!,
                             file.altTag!,
@@ -175,15 +176,15 @@ export class ProductRelationalRepository implements ProductRepository {
                 //await this.deleteUselessProductFiles(productId, updateData.files);
             }
 
-            const persistenceModel = ProductMapper.toPersistence(updateData);
+            const persistenceModel = OfferMapper.toPersistence(updateData);
             const updatedEntity = await queryRunner.manager.save(
-                ProductsEntity,
+                OffersEntity,
                 persistenceModel,
             );
 
             await queryRunner.commitTransaction();
 
-            return ProductMapper.toDomain(updatedEntity);
+            return OfferMapper.toDomain(updatedEntity);
         } catch (error) {
             await queryRunner.rollbackTransaction();
             throw error;
@@ -193,13 +194,13 @@ export class ProductRelationalRepository implements ProductRepository {
     }
 
     async checkIsFileAlreadyAssignned(
-        productId: string,
+        offerId: string,
         fileId: string,
     ): Promise<boolean> {
-        const entity = await this.productFileRepository.findOne({
+        const entity = await this.offerFileRepository.findOne({
             where: {
                 file: { id: fileId },
-                product: { id: productId },
+                offer: { id: offerId },
             },
         });
 
@@ -209,7 +210,7 @@ export class ProductRelationalRepository implements ProductRepository {
         return true;
     }
 
-    async softDelete(id: Product["id"]): Promise<void> {
-        await this.productRepository.softDelete(id!);
+    async softDelete(id: Offer["id"]): Promise<void> {
+        await this.offerRepository.softDelete(id!);
     }
 }
