@@ -13,6 +13,7 @@ import { GalleryFilesEntity } from 'src/gallery/infrastructure/entities/gallery-
 import { ProductFilesEntity } from '../../../../../products/infrastructure/entities/product-files.entity';
 import { FacilityFilesEntity } from 'src/facilities/infrastructure/entities/facility-files.entity';
 import { OfferFilesEntity } from 'src/offers/infrastructure/entities/offer-files.entity';
+import { BranchFilesEntity } from 'src/branches/infrastructure/entities/branch-files.entity';
 
 @Entity({ name: 'file' })
 export class FileEntity extends EntityRelationalHelper {
@@ -33,6 +34,9 @@ export class FileEntity extends EntityRelationalHelper {
 
   @OneToMany(() => FacilityFilesEntity, (facilitiesFileFile) => facilitiesFileFile.file)
   facilities: FacilityFilesEntity[];
+
+  @OneToMany(() => BranchFilesEntity, (branchesFile) => branchesFile.file)
+  branches: BranchFilesEntity[];
 
   @AfterLoad()
   @AfterInsert()

@@ -9,7 +9,7 @@ export class ProductFileMapper {
     product.id = raw.file?.id;
     product.altTag = raw.altTag;
     product.isDefault = raw.isDefault;
-    product.path = raw.file?.path;
+    product.path = raw.file?.path; 
     if (raw.product) {
       product.productId = raw.product;
     }

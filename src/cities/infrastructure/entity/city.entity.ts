@@ -1,9 +1,11 @@
+import { BranchesEntity } from 'src/branches/infrastructure/entities/braches.entity';
 import { StatusEnum } from '../../../statuses/statuses.enum';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -27,6 +29,9 @@ export class CitiesEntity {
 
   @Column({ default: StatusEnum.active })
   status?: StatusEnum;
+
+  @OneToOne(() => BranchesEntity, (branch) => branch.city)
+  branch:BranchesEntity; 
 
   @CreateDateColumn()
   createdAt: Date;
