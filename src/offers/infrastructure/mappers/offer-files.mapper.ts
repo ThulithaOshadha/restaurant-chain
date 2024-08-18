@@ -6,7 +6,7 @@ import { OffersEntity } from '../entities/offer.entity';
 
 export class OfferFileMapper {
   static toDomain(raw: OfferFilesEntity): OfferFile {
-    const offer = new ProductFile();
+    const offer = new OfferFile();
     offer.id = raw.file?.id;
     offer.altTag = raw.altTag;
     offer.isDefault = raw.isDefault;

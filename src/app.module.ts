@@ -25,6 +25,9 @@ import { QueriesModule } from './queries/queries.module';
 import { GalleryModule } from './gallery/gallery.module';
 import { ProductsModule } from './products/products.module';
 import { OffersModule } from './offers/offers.module';
+import { FacilitiesModule } from './facilities/facilities.module';
+import { BranchesModule } from './branches/branches.module';
+import { CitiesModule } from './cities/cities.module';
 
 
 @Module({
@@ -82,6 +85,9 @@ import { OffersModule } from './offers/offers.module';
     GalleryModule,
     ProductsModule,
     OffersModule,
+    FacilitiesModule,
+    BranchesModule,
+    CitiesModule,
 
   ],
 })

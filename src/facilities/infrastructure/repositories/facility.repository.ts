@@ -1,48 +1,48 @@
 import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DataSource, FindOptionsWhere, ILike, QueryRunner, Repository } from "typeorm";
+import { AbstractFacilitiesRepository } from "./abstract-facility.repository";
 import { FilesService } from "src/files/files.service";
+import { FilterProductDto } from "src/products/dto/filter-product.dto";
 import { EntityCondition } from "src/utils/types/entity-condition.type";
 import { InfinityPaginationResultType } from "src/utils/types/infinity-pagination-result.type";
 import { NullableType } from "src/utils/types/nullable.type";
 import { IPaginationOptions } from "src/utils/types/pagination-options";
+import { FacilityMapper } from "../mappers/facility.mapper";
 import { CustomException } from "src/exception/common-exception";
 import { FileEntity } from "src/files/infrastructure/persistence/relational/entities/file.entity";
-import { OffersAbstractRepository } from "./abstract-offer.repository";
-import { Offer } from "src/offers/domain/offer";
-import { OffersEntity } from "../entities/offer.entity";
-import { OfferFilesEntity } from "../entities/offer-files.entity";
-import { OfferMapper } from "../mappers/offer.mapper";
-import { FilterOfferDto } from "src/offers/dto/filter-offer.dto";
+import { FacilitiesEntity } from "../entities/facility.entity";
+import { FacilityFilesEntity } from "../entities/facility-files.entity";
+import { Facility } from "src/facilities/domain/facility";
 
 @Injectable()
-export class OffersRepository implements OffersAbstractRepository {
+export class FacilitiesRepository implements AbstractFacilitiesRepository {
     constructor(
-        @InjectRepository(OffersEntity)
-        private readonly offerRepository: Repository<OffersEntity>,
-        @InjectRepository(OfferFilesEntity)
-        private readonly offerFileRepository: Repository<OfferFilesEntity>,
+        @InjectRepository(FacilitiesEntity) 
+        private readonly facilityRepository: Repository<FacilitiesEntity>,
+        @InjectRepository(FacilityFilesEntity)
+        private readonly facilityFileRepository: Repository<FacilityFilesEntity>,
         private dataSource: DataSource,
         private readonly fileService: FilesService,
     ) { }
 
-    async create(data: Offer): Promise<Offer> {
+    async create(data: Facility): Promise<Facility> {
         const queryRunner = this.dataSource.createQueryRunner();
 
         await queryRunner.connect();
         try {
             await queryRunner.startTransaction();
 
-            const persistenceModel = OfferMapper.toPersistence(data);
+            const persistenceModel = FacilityMapper.toPersistence(data);
 
             const newEntity = await queryRunner.manager.save(
-                OffersEntity,
+                FacilitiesEntity,
                 persistenceModel,
             );
             const fileArray: any = [];
             if (data.files?.length) {
                 for (let file of data.files) {
-                    const fileEntity = await this.createOfferFile(
+                    const fileEntity = await this.createFacilityFile(
                         newEntity.id,
                         file.id!,
                         file.altTag!,
@@ -54,7 +54,7 @@ export class OffersRepository implements OffersAbstractRepository {
             }
             await queryRunner.commitTransaction();
             newEntity.files = fileArray;
-            return OfferMapper.toDomain(newEntity);
+            return FacilityMapper.toDomain(newEntity);
         } catch (error) {
             console.log(error);
             await queryRunner.rollbackTransaction();
@@ -65,35 +65,35 @@ export class OffersRepository implements OffersAbstractRepository {
         }
     }
 
-    async createOfferFile(
-        offerId: string,
+    async createFacilityFile(
+        facilityId: string,
         fileId: string,
         altTag: string,
         isDefault: boolean,
         queryRunner: QueryRunner,
-    ): Promise<OfferFilesEntity> {
-        const offerFile = this.offerFileRepository.create({
+    ): Promise<FacilityFilesEntity> {
+        const productFile = this.facilityFileRepository.create({
             file: { id: fileId } as FileEntity,
-            offer: { id: offerId } as OffersEntity,
+            facility: { id: facilityId } as FacilitiesEntity,
             altTag: altTag,
             isDefault: isDefault,
         });
 
-        const offerFileEntity = await queryRunner.manager.save(
-            OfferFilesEntity,
-            offerFile,
+        const productFileEntity = await queryRunner.manager.save(
+            FacilityFilesEntity,
+            productFile,
         );
-        return offerFileEntity;
+        return productFileEntity;
     }
 
     async findManyWithPagination({
         filterOptions,
         paginationOptions,
     }: {
-        filterOptions?: FilterOfferDto | null | undefined;
+        filterOptions?: FilterProductDto | null | undefined;
         paginationOptions: IPaginationOptions;
-    }): Promise<InfinityPaginationResultType<Offer>> {
-        const where: FindOptionsWhere<OffersEntity> = {};
+    }): Promise<InfinityPaginationResultType<Facility>> {
+        const where: FindOptionsWhere<FacilitiesEntity> = {};
         if (filterOptions?.name?.length) {
             where.name = ILike(`%${filterOptions.name}%`);
         }
@@ -102,10 +102,10 @@ export class OffersRepository implements OffersAbstractRepository {
             where.status = filterOptions.status;
         }
 
-        const totalRecords = await this.offerRepository.count({ where });
+        const totalRecords = await this.facilityRepository.count({ where });
 
         paginationOptions.totalRecords = totalRecords;
-        const entities = await this.offerRepository.find({
+        const entities = await this.facilityRepository.find({
             skip: (paginationOptions.page - 1) * paginationOptions.limit,
             take: paginationOptions.limit,
             where: where,
@@ -118,7 +118,7 @@ export class OffersRepository implements OffersAbstractRepository {
                 updatedAt: 'DESC',
             },
         });
-        const records = entities.map((offer) => OfferMapper.toDomain(offer));
+        const records = entities.map((product) => FacilityMapper.toDomain(product));
 
         return {
             data: records,
@@ -127,22 +127,22 @@ export class OffersRepository implements OffersAbstractRepository {
             hasNextPage: records.length === paginationOptions.limit,
         };
     }
-    async findOne(fields: EntityCondition<Offer>): Promise<NullableType<Offer>> {
-        const entity = await this.offerRepository.findOne({
-            where: fields as FindOptionsWhere<OffersEntity>,
+    async findOne(fields: EntityCondition<Facility>): Promise<NullableType<Facility>> {
+        const entity = await this.facilityRepository.findOne({
+            where: fields as FindOptionsWhere<FacilitiesEntity>,
             relations: {
                 files: { file: true },
             },
         });
 
-        return entity ? OfferMapper.toDomain(entity) : null;
+        return entity ? FacilityMapper.toDomain(entity) : null;
     }
-    async updateOfferData(offerId: string, updateData: Offer): Promise<Offer> {
-        const offer = await this.offerRepository.findOne({
-            where: { id: offerId },
+    async update(productId: string, updateData: Facility): Promise<Facility> {
+        const facility = await this.facilityRepository.findOne({
+            where: { id: productId },
         });
-        if (!offer) {
-            throw new CustomException('Offer not found', HttpStatus.NOT_FOUND);
+        if (!facility) {
+            throw new CustomException('Facility not found', HttpStatus.NOT_FOUND);
         }
 
         const queryRunner = this.dataSource.createQueryRunner();
@@ -154,7 +154,7 @@ export class OffersRepository implements OffersAbstractRepository {
             if (updateData.files && updateData.files.length > 0) {
                 for (const file of updateData.files) {
                     const isAlreadyAssigned = await this.checkIsFileAlreadyAssignned(
-                        offerId,
+                        productId,
                         file?.id!,
                     );
 
@@ -162,8 +162,8 @@ export class OffersRepository implements OffersAbstractRepository {
                         continue;
                     }
                     if (!isAlreadyAssigned) {
-                        await this.createOfferFile(
-                            offerId,
+                        await this.createFacilityFile(
+                            productId,
                             file.id!,
                             file.altTag!,
                             file.isDefault!,
@@ -175,15 +175,15 @@ export class OffersRepository implements OffersAbstractRepository {
                 //await this.deleteUselessProductFiles(productId, updateData.files);
             }
 
-            const persistenceModel = OfferMapper.toPersistence(updateData);
+            const persistenceModel = FacilityMapper.toPersistence(updateData);
             const updatedEntity = await queryRunner.manager.save(
-                OffersEntity,
+                FacilitiesEntity,
                 persistenceModel,
             );
 
             await queryRunner.commitTransaction();
 
-            return OfferMapper.toDomain(updatedEntity);
+            return FacilityMapper.toDomain(updatedEntity);
         } catch (error) {
             await queryRunner.rollbackTransaction();
             throw error;
@@ -193,13 +193,13 @@ export class OffersRepository implements OffersAbstractRepository {
     }
 
     async checkIsFileAlreadyAssignned(
-        offerId: string,
+        facilityId: string,
         fileId: string,
     ): Promise<boolean> {
-        const entity = await this.offerFileRepository.findOne({
+        const entity = await this.facilityFileRepository.findOne({
             where: {
                 file: { id: fileId },
-                offer: { id: offerId },
+                facility: { id: facilityId },
             },
         });
 
@@ -209,7 +209,7 @@ export class OffersRepository implements OffersAbstractRepository {
         return true;
     }
 
-    async softDelete(id: Offer["id"]): Promise<void> {
-        await this.offerRepository.softDelete(id!);
+    async softDelete(id: Facility["id"]): Promise<void> {
+        await this.facilityRepository.softDelete(id!);
     }
 }

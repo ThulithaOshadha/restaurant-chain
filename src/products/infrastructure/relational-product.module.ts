@@ -5,12 +5,14 @@ import { FilesModule } from '../../files/files.module';
 import { ProductFilesEntity } from './entities/product-files.entity';
 import { ProductsEntity } from './entities/products.entity';
 import { ProductRepository } from './repositories/abstract-product.repository';
+import { FileEntity } from 'src/files/infrastructure/persistence/relational/entities/file.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       ProductsEntity,
       ProductFilesEntity,
+      FileEntity
     ]),
     forwardRef(() => FilesModule),
   ],
@@ -22,4 +24,4 @@ import { ProductRepository } from './repositories/abstract-product.repository';
   ],
   exports: [ProductRepository],
 })
-export class ProductPersistenceModule {}
+export class ProductPersistenceModule { }
