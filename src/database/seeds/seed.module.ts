@@ -10,6 +10,7 @@ import { StatusSeedModule } from './status/status-seed.module';
 import { UserSeedModule } from './user/user-seed.module';
 import { PermissionSeedModule } from './permission/permission-seed.module';
 import { RolePermissionSeedModule } from './role-permission/role-permission-seed.module';
+import { CitySeedModule } from './city/city-seed.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { RolePermissionSeedModule } from './role-permission/role-permission-seed
     UserSeedModule,
     PermissionSeedModule,
     RolePermissionSeedModule,
+    CitySeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
@@ -31,4 +33,4 @@ import { RolePermissionSeedModule } from './role-permission/role-permission-seed
     }),
   ],
 })
-export class SeedModule {}
+export class SeedModule { }

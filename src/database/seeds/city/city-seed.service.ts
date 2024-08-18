@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CityEntity } from '../../../cities/infrastructure/entity/city.entity';
+import { CitiesEntity } from '../../../cities/infrastructure/entity/city.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class CitySeedService {
   constructor(
-    @InjectRepository(CityEntity)
-    private repository: Repository<CityEntity>,
+    @InjectRepository(CitiesEntity)
+    private repository: Repository<CitiesEntity>,
   ) {}
 
   async run() {
