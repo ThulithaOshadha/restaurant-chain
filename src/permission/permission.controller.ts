@@ -25,8 +25,8 @@ export class PermissionController {
   constructor(private readonly permissionService: PermissionService) {}
 
   @ApiBearerAuth()
-  @Permission(PermissionEnum.PERMISSION_MANAGE)
-  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+  // @Permission(PermissionEnum.PERMISSION_MANAGE)
+  // @UseGuards(AuthGuard('jwt'), PermissionsGuard)
   @Get('get-all-permissions')
   @HttpCode(HttpStatus.OK)
   async findAll(
@@ -35,7 +35,7 @@ export class PermissionController {
     @Query('limit', { transform: (value) => (value ? Number(value) : 10000) })
     limits?: number,
     @Query('roleId') roleId?: number,
-  ) {
+  ) {    
 
     const page = pages ?? 1;
     let limit = limits ?? 10000;
@@ -58,8 +58,8 @@ export class PermissionController {
   }
 
   @ApiBearerAuth()
-  @Permission(PermissionEnum.PERMISSION_MANAGE)
-  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+  // @Permission(PermissionEnum.PERMISSION_MANAGE)
+  // @UseGuards(AuthGuard('jwt'), PermissionsGuard)
   @Get(':id')
   findOnePermission(@Param('id') id: string) {
     const condition: EntityCondition<PermissionEntity> = { id };
@@ -67,8 +67,8 @@ export class PermissionController {
   }
 
   @ApiBearerAuth()
-  @Permission(PermissionEnum.PERMISSION_MANAGE)
-  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+  // @Permission(PermissionEnum.PERMISSION_MANAGE)
+  // @UseGuards(AuthGuard('jwt'), PermissionsGuard)
   @Get('check/:userId/:permission')
   checkUserPermission(
     @Param('userId') userId: string,

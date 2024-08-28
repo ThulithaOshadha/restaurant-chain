@@ -30,16 +30,16 @@ export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
   @ApiBearerAuth()
-  @Permission(PermissionEnum.CREATE_ROLE)
-  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+  // @Permission(PermissionEnum.CREATE_ROLE)
+  // @UseGuards(AuthGuard('jwt'), PermissionsGuard)
   @Post()
   createRole(@Body() createRoleDto: CreateRoleDto) {
     return this.roleService.createRole(createRoleDto);
   }
 
   @ApiBearerAuth()
-  @Permission(PermissionEnum.VIEW_ROLE)
-  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+  // @Permission(PermissionEnum.VIEW_ROLE)
+  //@UseGuards(AuthGuard('jwt'))
   @Get('get-all-role')
   @HttpCode(HttpStatus.OK)
   async findAll(
@@ -76,8 +76,8 @@ export class RoleController {
   }
 
   @ApiBearerAuth()
-  @Permission(PermissionEnum.VIEW_ROLE)
-  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+  // @Permission(PermissionEnum.VIEW_ROLE)
+  // @UseGuards(AuthGuard('jwt'), PermissionsGuard)
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiParam({
@@ -90,8 +90,8 @@ export class RoleController {
   }
 
   @ApiBearerAuth()
-  @Permission(PermissionEnum.UPDATE_ROLE)
-  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+  // @Permission(PermissionEnum.UPDATE_ROLE)
+  // @UseGuards(AuthGuard('jwt'), PermissionsGuard)
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   @ApiParam({
@@ -107,8 +107,8 @@ export class RoleController {
   }
 
   @ApiBearerAuth()
-  @Permission(PermissionEnum.DELETE_ROLE)
-  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+  // @Permission(PermissionEnum.DELETE_ROLE)
+  // @UseGuards(AuthGuard('jwt'), PermissionsGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', required: true })

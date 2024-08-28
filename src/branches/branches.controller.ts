@@ -14,10 +14,12 @@ export class BranchesController {
   constructor(private readonly branchesService: BranchesService) {}
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createDto: CreateBranchDto): Promise<Branch> {
+    console.log('createDto ===== ',createDto);
+    
     return this.branchesService.create(createDto);
   }
  
@@ -63,7 +65,7 @@ export class BranchesController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   @Put(':id') // Using HTTP PUT for update
   @HttpCode(HttpStatus.OK)
   @ApiParam({
@@ -74,7 +76,7 @@ export class BranchesController {
   update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateBranchDto,
-  ): Promise<Branch> {
+  ): Promise<Branch> {    
     return this.branchesService.update(id, updateProductDto);
   }
 }

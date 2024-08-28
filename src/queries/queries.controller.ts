@@ -13,7 +13,7 @@ export class QueriesController {
   constructor(private readonly queriesService: QueriesService) { }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createCityDto: CreateQueryDto, @Request() request): Promise<QueryDomain> {
@@ -58,7 +58,7 @@ export class QueriesController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', required: true })

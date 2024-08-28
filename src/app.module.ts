@@ -28,6 +28,7 @@ import { OffersModule } from './offers/offers.module';
 import { FacilitiesModule } from './facilities/facilities.module';
 import { BranchesModule } from './branches/branches.module';
 import { CitiesModule } from './cities/cities.module';
+import { ReservationsModule } from './reservations/reservations.module';
 
 
 @Module({
@@ -88,6 +89,7 @@ import { CitiesModule } from './cities/cities.module';
     FacilitiesModule,
     BranchesModule,
     CitiesModule,
+    ReservationsModule,
 
   ],
 })

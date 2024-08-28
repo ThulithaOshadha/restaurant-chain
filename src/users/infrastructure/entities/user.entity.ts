@@ -20,6 +20,7 @@ import {
 } from 'typeorm';
 import { RoleEntity } from 'src/roles/infrastructure/entities/role.entity';
 import { QueryEntity } from 'src/queries/infrstructure/entities/query.entity';
+import { ReservationsEntity } from 'src/reservations/infrastructure/entities/reservations.entity';
 
 
 @Entity({
@@ -74,6 +75,8 @@ export class UserEntity extends EntityRelationalHelper {
   @OneToMany(() => QueryEntity, (query) => query.user)
   query: QueryEntity[];
 
+  @OneToMany(() => ReservationsEntity, (reservation) => reservation.user)
+  reservation: ReservationsEntity;
 
   @CreateDateColumn()
   createdAt: Date;

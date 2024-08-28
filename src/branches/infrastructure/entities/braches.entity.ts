@@ -12,16 +12,17 @@ import {
 } from 'typeorm';
 import { BranchFilesEntity } from './branch-files.entity';
 import { CitiesEntity } from 'src/cities/infrastructure/entity/city.entity';
+import { ReservationsEntity } from 'src/reservations/infrastructure/entities/reservations.entity';
 
 @Entity({ name: 'branches' })
 export class BranchesEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({type: String, nullable: false})
+  @Column({ type: String, nullable: false })
   name: string;
 
-  @Column({type: 'text', nullable: true})
+  @Column({ type: 'text', nullable: true })
   description: string;
 
   @Column({ default: StatusEnum.active })
@@ -31,8 +32,11 @@ export class BranchesEntity {
   files?: BranchFilesEntity[];
 
   @OneToOne(() => CitiesEntity, (city) => city.branch)
-  @JoinColumn({name: "cityId"})
+  @JoinColumn({ name: "cityId" })
   city: CitiesEntity;
+
+  @OneToMany(() => ReservationsEntity, (reservation) => reservation.branch)
+  reservation: ReservationsEntity;
 
   @CreateDateColumn()
   createdAt: Date;

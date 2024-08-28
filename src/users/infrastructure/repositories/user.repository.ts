@@ -17,6 +17,7 @@ import { NullableType } from '../../../utils/types/nullable.type';
 import { UserEntity } from '../entities/user.entity';
 import { CustomException } from '../../../exception/common-exception';
 import { InfinityPaginationResultType } from '../../../utils/types/infinity-pagination-result.type';
+import { RoleEnum } from 'src/roles/roles.enum';
 
 @Injectable()
 export class UserRepository implements UserAbstractRepository {
@@ -24,7 +25,7 @@ export class UserRepository implements UserAbstractRepository {
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
     private dataSource: DataSource,
-  ) {}
+  ) { }
 
   async create(data: User): Promise<User> {
     const queryRunner = this.dataSource.createQueryRunner();
@@ -61,73 +62,6 @@ export class UserRepository implements UserAbstractRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<InfinityPaginationResultType<User>> {
 
-    // queryBuilder.leftJoinAndSelect('user.photo', 'photo')
-    //   .leftJoinAndSelect('user.role', 'role')
-    //   .leftJoinAndSelect('user.buckets', 'buckets')
-    //   .leftJoinAndSelect('user.userAddress', 'userAddress')
-    //   .leftJoinAndSelect('user.status', 'status')
-    //   .leftJoinAndSelect('userAddress.address', 'address');
-
-    // if (filterOptions?.userType === 'staff') {
-    //   queryBuilder.andWhere('role.id != :roleId', { roleId: 3 });
-    // }
-
-    // if (filterOptions?.userType === 'user') {
-    //   queryBuilder.andWhere('role.id = :roleId', { roleId: 3 });
-    // }
-
-    // if (filterOptions?.name?.length) {
-    //   queryBuilder.andWhere('(user.firstName ILIKE :name OR user.lastName ILIKE :name)', { name: `%${filterOptions.name}%` });
-    // }
-
-    // if (filterOptions?.email?.length) {
-    //   queryBuilder.andWhere('user.email ILIKE :email', { email: `%${filterOptions.email}%` });
-    // }
-
-    // if (filterOptions?.role?.length) {
-    //   queryBuilder.andWhere('role.id = :roleId', { roleId: filterOptions.role });
-    // }
-
-    // if (filterOptions?.contactNo?.length) {
-    //   queryBuilder.andWhere('user.contactNo ILIKE :contactNo', { contactNo: `%${filterOptions.contactNo}%` });
-    // }
-
-    // if (filterOptions?.status) {
-    //   queryBuilder.andWhere('user.status.id = :statusId', { statusId: filterOptions.status });
-    // }
-
-    // // Exclude users with role.id = 1
-    // queryBuilder.andWhere('role.id != :excludedRoleId', { excludedRoleId: 1 });
-
-    // // Count total records
-    // const totalRecords = await queryBuilder.getCount();
-    // paginationOptions.totalRecords = totalRecords;
-
-    // // Apply pagination
-    // queryBuilder.skip((paginationOptions.page - 1) * paginationOptions.limit)
-    //   .take(paginationOptions.limit);
-
-    // // Apply sorting
-    // if (sortOptions?.length) {
-    //   sortOptions.forEach(sort => {
-    //     queryBuilder.addOrderBy(`user.updatedAt`, 'DESC');
-    //   });
-    // } else {
-    //   queryBuilder.addOrderBy('user.updatedAt', 'DESC');
-    // }
-
-    // // Execute query
-    // const entities = await queryBuilder.getMany();
-    // const records = entities.map((user) => UserMapper.toDomain(user));
-
-    // return {
-    //   data: records,
-    //   currentPage: paginationOptions.page,
-    //   totalRecords: totalRecords,
-    //   hasNextPage: records.length === paginationOptions.limit,
-    // };
-
-    /////////////////////////////////////
 
     let where: FindOptionsWhere<UserEntity> | FindOptionsWhere<UserEntity>[] =
       {};
@@ -140,7 +74,11 @@ export class UserRepository implements UserAbstractRepository {
     if (filterOptions?.userType === 'user') {
       where['role.id'] = 3;
     }
-    
+
+    if (filterOptions?.userType === 'customer') {
+      where.role = { id: RoleEnum.customer }
+    }
+
 
     if (filterOptions?.email?.length) {
       where.email = ILike(`%${filterOptions.email}%`);
@@ -160,7 +98,7 @@ export class UserRepository implements UserAbstractRepository {
     if (filterOptions?.name) {
       const [firstName, ...rest] = filterOptions.name.split(' ');
       const lastName = rest.join(' ');
-    
+
       where = [
         {
           ...where,
@@ -256,5 +194,5 @@ export class UserRepository implements UserAbstractRepository {
     }
   }
 
- 
+
 }

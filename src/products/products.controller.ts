@@ -14,10 +14,11 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  //@UseGuards(AuthGuard('jwt'))
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createProductDto: CreateProductDto): Promise<Product> {
+    console.log('createProductDto ============ ',createProductDto);
     return this.productsService.create(createProductDto);
   }
  
@@ -58,12 +59,12 @@ export class ProductsController {
     type: String,
     required: true,
   })
-  findOne(@Param('id') id: Product['id']): Promise<NullableType<Product>> {
+  findOne(@Param('id') id: Product['id']): Promise<NullableType<Product>> {   
     return this.productsService.findOne({ id });
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  //@UseGuards(AuthGuard('jwt'))
   @Put(':id') // Using HTTP PUT for update
   @HttpCode(HttpStatus.OK)
   @ApiParam({

@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ProductFilesEntity } from './product-files.entity';
+import { ReservationProductsEntity } from 'src/reservations/infrastructure/entities/reservation_products.entity';
 
 @Entity({ name: 'products' })
 export class ProductsEntity {
@@ -29,6 +30,9 @@ export class ProductsEntity {
 
   @OneToMany(() => ProductFilesEntity, (ppf) => ppf.product)
   files?: ProductFilesEntity[];
+
+  @OneToMany(() => ReservationProductsEntity, (reservation) => reservation.product)
+  reservation?: ReservationProductsEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

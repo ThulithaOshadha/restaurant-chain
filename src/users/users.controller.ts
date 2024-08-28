@@ -28,22 +28,20 @@ import { AuthGuard } from '@nestjs/passport';
 @ApiTags('User')
 @Controller('user')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @Permission(PermissionEnum.CREATE_USER)
-  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+  // @Permission(PermissionEnum.CREATE_USER)
+  // @UseGuards(AuthGuard('jwt'), PermissionsGuard)
   create(@Body() createProfileDto: CreateUserDto): Promise<User> {
     return this.usersService.create(createProfileDto);
   }
 
   @ApiBearerAuth()
-  @Permission(PermissionEnum.VIEW_USER)
-  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
-  @Get()
   // @Permission(PermissionEnum.VIEW_USER)
   // @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+  @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Query('pages', { transform: (value) => (value ? Number(value) : 1) })
@@ -80,11 +78,47 @@ export class UsersController {
     };
   }
 
+  @Get('customer/find-all')
+  @HttpCode(HttpStatus.OK)
+  async findAllCustomer(
+    @Query('pages', { transform: (value) => (value ? Number(value) : 1) })
+    pages?: number,
+    @Query('limit', { transform: (value) => (value ? Number(value) : 10000) })
+    limits?: number,
+    @Query('name') name?: string,
+    @Query('contactNo') contactNo?: string,
+    @Query('email') email?: string,
+    @Query('role') role?: string,
+    @Query('userType') userType?: string,
+    @Query('status') status?: number,
+  ): Promise<InfinityPaginationResultType<User>> {
+    const page = pages ?? 1;
+    let limit = limits ?? 10;
+
+    if (limit > 50) {
+      limit = 50;
+    }
+
+    const paginationResult = await this.usersService.findManyWithPagination({
+      filterOptions: { name, contactNo, role, userType: 'customer', status, email },
+      sortOptions: [],
+      paginationOptions: {
+        page,
+        limit,
+      },
+    });
+    const { totalRecords } = paginationResult;
+
+    return {
+      ...paginationResult,
+      totalRecords,
+    };
+  }
+
   @ApiBearerAuth()
-  @Permission(PermissionEnum.VIEW_USER)
-  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+  // @Permission(PermissionEnum.VIEW_USER)
+  // @UseGuards(AuthGuard('jwt'), PermissionsGuard)
   @Get(':id')
-  @Permission(PermissionEnum.VIEW_USER)
   @HttpCode(HttpStatus.OK)
   @ApiParam({
     name: 'id',
@@ -96,8 +130,8 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
-  @Permission(PermissionEnum.UPDATE_USER)
-  @UseGuards(AuthGuard('jwt'), PermissionsGuard)
+  // @Permission(PermissionEnum.UPDATE_USER)
+  // @UseGuards(AuthGuard('jwt'), PermissionsGuard)
   @Patch(':id')
   @Permission(PermissionEnum.UPDATE_USER)
   @HttpCode(HttpStatus.OK)
