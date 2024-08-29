@@ -34,6 +34,10 @@ export class UpdateBranchDto {
   @Transform(({ value }) => StatusEnum[value])
   status?: StatusEnum;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  facilities: string[];
+
 }
 
 

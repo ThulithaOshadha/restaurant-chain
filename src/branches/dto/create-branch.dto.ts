@@ -27,6 +27,10 @@ export class CreateBranchDto {
   @IsOptional()
   description?: string;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  facilities: string[];
+
 }
 
 

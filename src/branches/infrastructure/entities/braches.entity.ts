@@ -13,6 +13,7 @@ import {
 import { BranchFilesEntity } from './branch-files.entity';
 import { CitiesEntity } from 'src/cities/infrastructure/entity/city.entity';
 import { ReservationsEntity } from 'src/reservations/infrastructure/entities/reservations.entity';
+import { BranchFacilitiesEntity } from './branch-facilities.entity';
 
 @Entity({ name: 'branches' })
 export class BranchesEntity {
@@ -30,6 +31,9 @@ export class BranchesEntity {
 
   @OneToMany(() => BranchFilesEntity, (ppf) => ppf.branch)
   files?: BranchFilesEntity[];
+
+  @OneToMany(() => BranchFacilitiesEntity, (ppf) => ppf.branch)
+  facility?: BranchFacilitiesEntity[];
 
   @OneToOne(() => CitiesEntity, (city) => city.branch)
   @JoinColumn({ name: "cityId" })

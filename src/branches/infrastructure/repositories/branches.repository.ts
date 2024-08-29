@@ -14,14 +14,19 @@ import { BranchesEntity } from "../entities/braches.entity";
 import { BranchFilesEntity } from "../entities/branch-files.entity";
 import { Branch } from "src/branches/domain/branch.domain";
 import { BranchMapper } from "../mappers/branch.mapper";
+import { BranchFacilitiesEntity } from "../entities/branch-facilities.entity";
+import { FacilitiesEntity } from "src/facilities/infrastructure/entities/facility.entity";
+import { Facility } from "src/facilities/domain/facility";
 
 @Injectable()
 export class BranchRepository implements AbstractBranchRepository {
     constructor(
-        @InjectRepository(BranchesEntity) 
+        @InjectRepository(BranchesEntity)
         private readonly branchRepository: Repository<BranchesEntity>,
         @InjectRepository(BranchFilesEntity)
         private readonly branchFileRepository: Repository<BranchFilesEntity>,
+        @InjectRepository(BranchFacilitiesEntity)
+        private readonly branchfacilitiesRepository: Repository<BranchFacilitiesEntity>,
         private dataSource: DataSource,
     ) { }
 
@@ -41,7 +46,7 @@ export class BranchRepository implements AbstractBranchRepository {
             const fileArray: any = [];
             if (data.files?.length) {
                 for (let file of data.files) {
-                    const fileEntity = await this.createProductFile(
+                    const fileEntity = await this.createBranchFile(
                         newEntity.id,
                         file.id!,
                         file.altTag!,
@@ -49,6 +54,14 @@ export class BranchRepository implements AbstractBranchRepository {
                         queryRunner,
                     );
                     fileArray.push(fileEntity);
+                }
+            }
+            const facilities: any = [];
+            if (data.facilities?.length) {
+
+                for (const facility of data.facilities) {
+                    const facilityEntity = await this.createBranchFacilities(newEntity.id, facility.id!, queryRunner);
+                    facilities.push(facilityEntity);
                 }
             }
             await queryRunner.commitTransaction();
@@ -64,7 +77,17 @@ export class BranchRepository implements AbstractBranchRepository {
         }
     }
 
-    async createProductFile(
+    async createBranchFacilities(branchId: string, facilityId: string, queryRunner: QueryRunner) {
+
+        const facilityBranch = this.branchfacilitiesRepository.create({
+            branch: { id: branchId } as BranchesEntity,
+            facility: { id: facilityId } as FacilitiesEntity
+        })
+
+        return queryRunner.manager.save(BranchFacilitiesEntity, facilityBranch)
+    }
+
+    async createBranchFile(
         productId: string,
         fileId: string,
         altTag: string,
@@ -111,6 +134,7 @@ export class BranchRepository implements AbstractBranchRepository {
             // relations: ['files.file', 'subProducts'],
             relations: {
                 files: { file: true },
+                facility: { facility: true }
             },
 
             order: {
@@ -131,6 +155,7 @@ export class BranchRepository implements AbstractBranchRepository {
             where: fields as FindOptionsWhere<BranchesEntity>,
             relations: {
                 files: { file: true },
+                facility: { facility: true }
             },
         });
 
@@ -161,7 +186,7 @@ export class BranchRepository implements AbstractBranchRepository {
                         continue;
                     }
                     if (!isAlreadyAssigned) {
-                        await this.createProductFile(
+                        await this.createBranchFile(
                             id,
                             file.id!,
                             file.altTag!,
@@ -171,7 +196,29 @@ export class BranchRepository implements AbstractBranchRepository {
                     }
                 }
 
-                //await this.deleteUselessProductFiles(productId, updateData.files);
+                await this.deleteUselessFacilityFromBranch(id, updateData.facilities!);
+            }
+
+            if (updateData.facilities && updateData.facilities.length > 0) {
+                for (const facility of updateData.facilities) {
+                    const isAlreadyAssigned = await this.checkIsFileAlreadyAssignned(
+                        id,
+                        facility?.id!,
+                    );
+
+                    if (isAlreadyAssigned) {
+                        continue;
+                    }
+                    if (!isAlreadyAssigned) {
+                        await this.createBranchFacilities(
+                            id,
+                            facility.id!,
+                            queryRunner,
+                        );
+                    }
+                }
+
+                await this.deleteUselessFacilityFromBranch(id, updateData.facilities!);
             }
 
             const persistenceModel = BranchMapper.toPersistence(updateData);
@@ -206,6 +253,35 @@ export class BranchRepository implements AbstractBranchRepository {
             return false;
         }
         return true;
+    }
+
+
+    async checkIfFacilitiAlreadyAssigned(brannchId: string, facilityId: string) {
+        const entity = await this.branchfacilitiesRepository.findOne({
+            where: { branch: { id: brannchId }, facility: { id: facilityId } }
+        })
+        if (!entity) {
+            return false;
+        }
+        return true
+    }
+
+    async deleteUselessFacilityFromBranch(brannchId: string, facilities: Facility[]) {
+        const entity = await this.branchfacilitiesRepository.find({
+            where: {
+                branch: { id: brannchId },
+            },
+        });
+        console.log('entity ============= ', entity);
+
+        entity.forEach(async (each) => {
+            let isInUse = facilities.some(
+                (type) => type.id === each.id,
+            );
+            if (!isInUse) {
+                await this.branchfacilitiesRepository.remove(each);
+            }
+        });
     }
 
     async softDelete(id: Branch["id"]): Promise<void> {

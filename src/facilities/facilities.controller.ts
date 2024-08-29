@@ -15,11 +15,13 @@ export class FacilitiesController {
 
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  //@UseGuards(AuthGuard('jwt'))
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createProductDto: CreateFacilityDto): Promise<Facility> {
-    return this.facilitiesService.create(createProductDto);
+  create(@Body() dto: CreateFacilityDto): Promise<Facility> {
+    console.log('dto ========= ',dto);
+    
+    return this.facilitiesService.create(dto);
   }
  
   @Get() 
@@ -64,7 +66,7 @@ export class FacilitiesController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   @Put(':id') // Using HTTP PUT for update
   @HttpCode(HttpStatus.OK)
   @ApiParam({

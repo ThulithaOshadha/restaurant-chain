@@ -3,6 +3,7 @@ import { Branch } from '../../../branches/domain/branch.domain';
 import { BranchesEntity } from '../entities/braches.entity';
 import { BranchFileMapper } from './branch-file.mapper';
 import { CitiesEntity } from 'src/cities/infrastructure/entity/city.entity';
+import { FacilityMapper } from 'src/facilities/infrastructure/mappers/facility.mapper';
 
 export class BranchMapper {
     static toDomain(raw: BranchesEntity): Branch {
@@ -16,6 +17,9 @@ export class BranchMapper {
         }
         if (raw.city) {
             branch.city = CityMapper.toDomain(raw.city);
+        }
+        if(raw.facility) {
+            branch.facilities = raw.facility.map((facility) => FacilityMapper.toDomain(facility.facility!))
         }
         branch.description = raw.description;
         branch.createdAt = raw.createdAt;

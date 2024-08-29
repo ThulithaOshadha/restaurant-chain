@@ -6,12 +6,14 @@ import { AbstractBranchRepository } from './repositories/abstract-branches.repos
 import { BranchRepository } from './repositories/branches.repository';
 import { BranchesEntity } from './entities/braches.entity';
 import { BranchFilesEntity } from './entities/branch-files.entity';
+import { BranchFacilitiesEntity } from './entities/branch-facilities.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       BranchesEntity,
       BranchFilesEntity,
+      BranchFacilitiesEntity,
       FileEntity
     ]),
     forwardRef(() => FilesModule),

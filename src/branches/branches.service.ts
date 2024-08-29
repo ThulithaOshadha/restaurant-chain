@@ -9,10 +9,12 @@ import { InfinityPaginationResultType } from 'src/utils/types/infinity-paginatio
 import { NullableType } from 'src/utils/types/nullable.type';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { UpdateBranchDto } from './dto/update-branch.dto';
+import { FacilitiesService } from 'src/facilities/facilities.service';
+import { Facility } from 'src/facilities/domain/facility';
 
 @Injectable()
 export class BranchesService {
-    constructor(private readonly branchReposiiry: AbstractBranchRepository){}
+    constructor(private readonly branchReposiiry: AbstractBranchRepository, private readonly facilityService: FacilitiesService) { }
 
     async create(createDto: CreateBranchDto): Promise<Branch> {
         const isNameExist = await this.findOne({
@@ -26,11 +28,26 @@ export class BranchesService {
             );
         }
 
-        const product = {
+        let facilities: Facility[] = [];
+        if (createDto.facilities) {
+            for (const facility of createDto.facilities) {
+                const fclt = await this.facilityService.findOne({ id: facility })
+                if (!fclt) {
+                    throw new CustomException('Facility does not exist', HttpStatus.NOT_FOUND);
+                }
+                facilities.push(fclt);
+
+
+            }
+        }
+
+        const branch = {
+
             ...createDto,
+            facilities
         };
 
-        return await this.branchReposiiry.create(product);
+        return await this.branchReposiiry.create(branch);
     }
 
     findManyWithPagination({
@@ -70,9 +87,23 @@ export class BranchesService {
             }
         }
 
+        let facilities: Facility[] = [];
+        if (updateData.facilities) {
+            for (const facility of updateData.facilities) {
+                const fclt = await this.facilityService.findOne({ id: facility })
+                if (!fclt) {
+                    throw new CustomException('Facility does not exist', HttpStatus.NOT_FOUND);
+                }
+                facilities.push(fclt);
+
+
+            }
+        }
+
         const productDomain = {
             id: id,
-            ...updateData
+            ...updateData,
+            facilities
         }
         return this.branchReposiiry.update(id, productDomain);
     }

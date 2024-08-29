@@ -12,7 +12,6 @@ export class CreateFacilityDto {
   name: string;
 
   @ApiProperty()
-  @IsNotEmpty()
   price: number;
 
   @ApiProperty({ type: [FileDto] })
