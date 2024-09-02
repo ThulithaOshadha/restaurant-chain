@@ -13,6 +13,7 @@ import {
 import { UserEntity } from 'src/users/infrastructure/entities/user.entity';
 import { OrderProductsEntity } from './order-product.entity';
 import { OrderStatusEnum } from 'src/order/enums/order-status.enum';
+import { PaymentEntity } from 'src/payments/infrastructure/entity/payment.entity';
 
 @Entity({ name: `orders` })
 export class OrdersEntity {
@@ -37,6 +38,9 @@ export class OrdersEntity {
 
   @OneToMany(() => OrderProductsEntity, (products) => products.order)
   products: OrderProductsEntity[];
+
+  @OneToMany(() => PaymentEntity, (payment) => payment.order)
+  payment: PaymentEntity[];
 
   @CreateDateColumn()
   createdAt: Date;
