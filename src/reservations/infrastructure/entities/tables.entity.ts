@@ -5,12 +5,13 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  OneToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ReservationTablesEntity } from './reservation-tables.entity';
 
-@Entity({ name: 'resturant_tables' })
+@Entity({ name: `tables` })
 export class RestuarantTablesEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -20,6 +21,9 @@ export class RestuarantTablesEntity {
 
   @Column({ type: 'int', nullable: true })
   personCount?: number;
+
+  @OneToMany(() => ReservationTablesEntity, (reservation) => reservation.table)
+  reservation: ReservationTablesEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

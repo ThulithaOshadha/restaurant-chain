@@ -9,6 +9,7 @@ import {
     UpdateDateColumn,
 } from 'typeorm';
 import { ReservationsEntity } from './reservations.entity';
+import { RestuarantTablesEntity } from './tables.entity';
 
 @Entity({ name: 'reservation_tables' })
 export class ReservationTablesEntity {
@@ -19,7 +20,11 @@ export class ReservationTablesEntity {
     @JoinColumn({ name: "reservationId" })
     reservation: ReservationsEntity;
 
-    @Column({ type: 'varchar' })
+    @ManyToOne(() => RestuarantTablesEntity, (table) => table.reservation)
+    @JoinColumn({ name: `tableId` })
+    table: RestuarantTablesEntity;
+
+    @Column({ type: 'varchar' ,nullable: true})
     description: string;
 
     @CreateDateColumn()

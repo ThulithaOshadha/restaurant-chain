@@ -1,6 +1,6 @@
-import { Order } from "src/order/domain/order";
+import { Order } from "../../../order/domain/order";
 import { OrdersEntity } from "../entity/order.entity";
-import { UserEntity } from "src/users/infrastructure/entities/user.entity";
+import { UserEntity } from "../../../users/infrastructure/entities/user.entity";
 
 export class OrderMapper {
     static toDomain(orderEntity: OrdersEntity): Order {

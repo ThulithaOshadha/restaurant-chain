@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { RestuarantTablesEntity } from "src/reservations/infrastructure/entities/restables.enitiy";
 import { TableSeedService } from "./table-seed.service";
+import { RestuarantTablesEntity } from "../../../reservations/infrastructure/entities/tables.entity";
 
 @Module({
     imports: [TypeOrmModule.forFeature([RestuarantTablesEntity])],

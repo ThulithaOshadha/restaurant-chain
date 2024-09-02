@@ -36,6 +36,13 @@ export class OrderRepository implements AbstractOrderRepository {
                 persistenceOrderModel,
             );
 
+            if (data.products) {
+                for (const product of data.products) {
+                    await this.createOrderProduct(queryRunner, newOrder.id, product.qty, product.id, product.unitPrice)
+                }
+
+            }
+
             return OrderMapper.toDomain(newOrder);
 
 

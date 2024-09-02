@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RestuarantTablesEntity } from 'src/reservations/infrastructure/entities/restables.enitiy';
+import { RestuarantTablesEntity } from 'src/reservations/infrastructure/entities/tables.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
