@@ -21,6 +21,7 @@ import {
 import { RoleEntity } from 'src/roles/infrastructure/entities/role.entity';
 import { QueryEntity } from 'src/queries/infrstructure/entities/query.entity';
 import { ReservationsEntity } from 'src/reservations/infrastructure/entities/reservations.entity';
+import { OrdersEntity } from 'src/order/infrastructure/entity/order.entity';
 
 
 @Entity({
@@ -77,6 +78,9 @@ export class UserEntity extends EntityRelationalHelper {
 
   @OneToMany(() => ReservationsEntity, (reservation) => reservation.user)
   reservation: ReservationsEntity;
+
+  @OneToMany(() => OrdersEntity, (orders) => orders.user)
+  orders: OrdersEntity;
 
   @CreateDateColumn()
   createdAt: Date;

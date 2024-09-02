@@ -1,12 +1,11 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { BranchesService } from './branches.service';
 import { ApiBearerAuth, ApiParam } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
 import { CreateBranchDto } from './dto/create-branch.dto';
 import { Branch } from './domain/branch.domain';
-import { StatusEnum } from 'src/statuses/statuses.enum';
-import { InfinityPaginationResultType } from 'src/utils/types/infinity-pagination-result.type';
-import { NullableType } from 'src/utils/types/nullable.type';
+import { StatusEnum } from '../statuses/statuses.enum';
+import { InfinityPaginationResultType } from '../utils/types/infinity-pagination-result.type';
+import { NullableType } from '../utils/types/nullable.type';
 import { UpdateBranchDto } from './dto/update-branch.dto';
 
 @Controller('branches')

@@ -25,9 +25,9 @@ export class ReservationProductsEntity {
     @Column({ type: 'float', nullable: false })
     totalPrice: number;
 
-    @ManyToOne(() => ReservationsEntity, (reservation) => reservation.products)
-    @JoinColumn({name: "reservationId"})
-    reservation: ReservationsEntity;
+    // @ManyToOne(() => ReservationsEntity, (reservation) => reservation.products)
+    // @JoinColumn({name: "reservationId"})
+    // reservation: ReservationsEntity;
 
     @ManyToOne(() => ProductsEntity, (product) => product.reservation)
     @JoinColumn({name: "productId"})

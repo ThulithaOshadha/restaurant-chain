@@ -11,6 +11,7 @@ import { UserSeedModule } from './user/user-seed.module';
 import { PermissionSeedModule } from './permission/permission-seed.module';
 import { RolePermissionSeedModule } from './role-permission/role-permission-seed.module';
 import { CitySeedModule } from './city/city-seed.module';
+import { TableSeedModule } from './tables/table-seed.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { CitySeedModule } from './city/city-seed.module';
     PermissionSeedModule,
     RolePermissionSeedModule,
     CitySeedModule,
+    TableSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],

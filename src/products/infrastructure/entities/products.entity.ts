@@ -10,19 +10,20 @@ import {
 } from 'typeorm';
 import { ProductFilesEntity } from './product-files.entity';
 import { ReservationProductsEntity } from 'src/reservations/infrastructure/entities/reservation_products.entity';
+import { OrderProductsEntity } from 'src/order/infrastructure/entity/order-product.entity';
 
 @Entity({ name: 'products' })
 export class ProductsEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({type: String, nullable: false})
+  @Column({ type: String, nullable: false })
   name: string;
 
-  @Column({type: 'float', nullable: true})
+  @Column({ type: 'float', nullable: true })
   price: number;
 
-  @Column({type: 'text', nullable: true})
+  @Column({ type: 'text', nullable: true })
   description: string;
 
   @Column({ default: StatusEnum.active })
@@ -33,6 +34,9 @@ export class ProductsEntity {
 
   @OneToMany(() => ReservationProductsEntity, (reservation) => reservation.product)
   reservation?: ReservationProductsEntity[];
+
+  @OneToMany(() => OrderProductsEntity, (orders) => orders.products)
+  orders: OrderProductsEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

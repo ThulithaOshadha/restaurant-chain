@@ -40,7 +40,7 @@ export class BranchesEntity {
   city: CitiesEntity;
 
   @OneToMany(() => ReservationsEntity, (reservation) => reservation.branch)
-  reservation: ReservationsEntity;
+  reservation: ReservationsEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

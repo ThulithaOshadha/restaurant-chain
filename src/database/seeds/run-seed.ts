@@ -6,6 +6,7 @@ import { SeedModule } from './seed.module';
 import { PermissionSeedService } from './permission/permission-seed.service';
 import { RolePermissionSeedService } from './role-permission/role-permission-seed.service';
 import { CitySeedService } from './city/city-seed.service';
+import { TableSeedService } from './tables/table-seed.service';
 
 const runSeed = async () => {
   const app = await NestFactory.create(SeedModule);
@@ -17,6 +18,7 @@ const runSeed = async () => {
   await app.get(PermissionSeedService).run();
   await app.get(RolePermissionSeedService).run();
   await app.get(CitySeedService).run();
+  await app.get(TableSeedService).run();
 
 
   await app.close();

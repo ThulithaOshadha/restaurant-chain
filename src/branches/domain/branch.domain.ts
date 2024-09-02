@@ -1,7 +1,7 @@
-import { City } from 'src/cities/domain/city.domain';
+import { City } from '../../cities/domain/city.domain';
 import { StatusEnum } from '../../statuses/statuses.enum';
 import { BranchFile } from './branch-file.domain';
-import { Facility } from 'src/facilities/domain/facility';
+import { Facility } from '../../facilities/domain/facility';
 
 export class Branch {
   id?: string;
