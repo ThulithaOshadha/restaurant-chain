@@ -5,12 +5,12 @@ import { Tables } from "./tables";
 
 export class Reservation {
     id: string;
-    user: User;
+    user?: User;
     branch: Branch;
     table?: Tables
     reservationDate?: Date;
     personCount?: number;
-    total: number;
-    status:ReservationStatusEnum;
-    createdDate?: Date;
+    total?: number;
+    status?:ReservationStatusEnum;
+    createdAt?: Date;
 }

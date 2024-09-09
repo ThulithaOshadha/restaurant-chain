@@ -15,7 +15,7 @@ export class ReservationMapper {
     reservation.reservationDate = raw.reservationDate;
     reservation.personCount = raw.personCount;
     reservation.status = raw.status!;
-    reservation.createdDate = raw.createdAt;
+    reservation.createdAt = raw.createdAt;
 
     return reservation;
   }

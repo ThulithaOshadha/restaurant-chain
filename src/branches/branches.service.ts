@@ -23,7 +23,7 @@ export class BranchesService {
 
         if (isNameExist && isNameExist.deletedAt === null) {
             throw new CustomException(
-                'branch name allready exist',
+                'branch name already exists',
                 HttpStatus.NOT_ACCEPTABLE,
             );
         }
@@ -33,7 +33,7 @@ export class BranchesService {
             for (const facility of createDto.getFacilities) {
                 const fclt = await this.facilityService.findOne({ id: facility })
                 if (!fclt) {
-                    throw new CustomException('Facility does not exist', HttpStatus.NOT_FOUND);
+                    throw new CustomException('Facility does not exists', HttpStatus.NOT_FOUND);
                 }
                 facilities.push(fclt);
 
@@ -82,7 +82,7 @@ export class BranchesService {
             const branchbyName = await this.findOne({ name: updateData.getName });
             if (branchbyName && branchbyName.id !== existingBranch.id) {
                 throw new CustomException(
-                    'product name allready exist',
+                    'product name already exists',
                     HttpStatus.CONFLICT,
                 );
             }
@@ -93,7 +93,7 @@ export class BranchesService {
             for (const facility of updateData.getFacilities) {
                 const fclt = await this.facilityService.findOne({ id: facility })
                 if (!fclt) {
-                    throw new CustomException('Facility does not exist', HttpStatus.NOT_FOUND);
+                    throw new CustomException('Facility does not exists', HttpStatus.NOT_FOUND);
                 }
                 facilities.push(fclt);
 

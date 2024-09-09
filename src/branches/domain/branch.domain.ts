@@ -7,7 +7,7 @@ export class Branch {
   id?: string;
   name: string;
   lat?: number;
-  lang?: number;
+  lang?: number; 
   files?: BranchFile[];
   status?: StatusEnum;
   city?: City;
